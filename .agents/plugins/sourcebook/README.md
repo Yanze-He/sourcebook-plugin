@@ -6,8 +6,8 @@ for Codex or WorkBuddy setup. Versioned packages are published from this
 repository after platform validation.
 
 Desktop also includes a fallback copy, but never updates an independent
-installation. The Agent downloads and verifies its own update from GitHub,
-then installs it to a separate user-level `agent-plugin-installed` directory.
+installation. Marketplace installations use this repository's versioned
+plugin directory; updates are applied through the target Agent's marketplace.
 If Desktop is absent, installation stops and points the user to
 https://sourcebook.online.
 

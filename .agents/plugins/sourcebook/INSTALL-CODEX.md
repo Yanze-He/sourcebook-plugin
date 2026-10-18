@@ -4,10 +4,10 @@
 
 Sourcebook Desktop must be installed and running, with local Agent access enabled. If it is missing, direct the user to https://sourcebook.online.
 
-Use Codex's GitHub marketplace support:
+Use Codex's GitHub marketplace support. Until the signed release is available, this is a test-only installation from `development`:
 
 ```sh
-codex plugin marketplace add Yanze-He/sourcebook-plugin
+codex plugin marketplace add Yanze-He/sourcebook-plugin@development
 codex plugin add sourcebook@sourcebook-plugin
 ```
 
