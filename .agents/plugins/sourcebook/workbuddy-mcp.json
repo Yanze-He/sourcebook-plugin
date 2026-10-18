@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "sourcebook": {
+      "command": "${CODEBUDDY_PLUGIN_ROOT}/bin/sourcebook-mcp",
+      "args": [],
+      "env": { "SOURCEBOOK_AGENT_NAME": "WorkBuddy" }
+    }
+  }
+}

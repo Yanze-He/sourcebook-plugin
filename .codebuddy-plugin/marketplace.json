@@ -1,0 +1,11 @@
+{
+  "name": "sourcebook-plugin",
+  "owner": { "name": "Sourcebook" },
+  "plugins": [
+    {
+      "name": "sourcebook",
+      "source": "./.agents/plugins/sourcebook",
+      "description": "Use Books from a locally running Sourcebook Desktop with MCP and a Skill."
+    }
+  ]
+}

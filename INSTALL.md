@@ -15,6 +15,8 @@ If an older `sourcebook@sourcebook-bundled` installation exists, remove only tha
 
 ## WorkBuddy
 
-Use WorkBuddy's local MCP configuration and Skill installation. Follow [INSTALL-WORKBUDDY.md](.agents/plugins/sourcebook/INSTALL-WORKBUDDY.md) after downloading a versioned package from this repository. Preserve other MCP servers and Skills. Restart WorkBuddy, then ask it to open Sourcebook.
+In WorkBuddy's **Skills → Suites → Add marketplace** dialog, enter `Yanze-He/sourcebook-plugin`. Install `sourcebook` from the new marketplace. The plugin includes both its MCP server and Skill; it does not need a separate edit to the user's `mcp.json`. Restart WorkBuddy, then ask it to open Sourcebook.
+
+If marketplace installation is unavailable in your WorkBuddy version, use the [manual WorkBuddy guide](.agents/plugins/sourcebook/INSTALL-WORKBUDDY.md) and a versioned plugin package. Preserve other MCP servers and Skills.
 
 Report only whether the install succeeded, the verified plugin version, and any next action the user must take. Do not print command logs or an extended security review.
