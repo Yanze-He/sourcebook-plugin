@@ -1,0 +1,12 @@
+{
+  "name": "sourcebook-plugin",
+  "interface": { "displayName": "Sourcebook" },
+  "plugins": [
+    {
+      "name": "sourcebook",
+      "source": { "source": "local", "path": "./.agents/plugins/sourcebook" },
+      "policy": { "installation": "AVAILABLE" },
+      "category": "Productivity"
+    }
+  ]
+}

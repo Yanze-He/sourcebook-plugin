@@ -3,3 +3,4 @@ release/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+.agents/plugins/sourcebook/bin/
