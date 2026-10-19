@@ -43,8 +43,14 @@ jobs:
             echo "Invalid build label: $BUILD_LABEL" >&2
             exit 1
           fi
+          VERSION=$(node -p 'require("../.agents/plugins/sourcebook/plugin.json").version')
+          WORKBUDDY_VERSION=$(node -p 'require("../.agents/plugins/sourcebook/.codebuddy-plugin/plugin.json").version')
+          if [[ "$VERSION" != "$WORKBUDDY_VERSION" ]]; then
+            echo "Plugin and WorkBuddy manifest versions differ" >&2
+            exit 1
+          fi
           mkdir -p ../.agents/plugins/sourcebook/bin
-          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1+$BUILD_LABEL" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
+          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=$VERSION+$BUILD_LABEL" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
       - name: Verify version
         if: runner.os == 'macOS'
         run: .agents/plugins/sourcebook/bin/sourcebook-mcp version

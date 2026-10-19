@@ -21,7 +21,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-var bridgeVersion = "0.1.2-beta.1"
+var bridgeVersion = "0.1.2-beta.2"
 
 const (
 	sourcebookAppURI             = "ui://sourcebook/library.html"

@@ -2,7 +2,7 @@
 name: sourcebook
 description: Use a locally running Sourcebook Desktop library when a user mentions Sourcebook or asks to read, save, organize, or update work in a current or named project Book.
 metadata:
-  sourcebook_version: "0.1.2-beta.1"
+  sourcebook_version: "0.1.2-beta.2"
 ---
 
 Use Sourcebook without requiring `@Sourcebook` whenever the user mentions Sourcebook, refers to a current or named project Book, asks to save something to a Book, or asks to organize the current conversation into their project materials. This Skill supplies the workflow; Sourcebook MCP supplies the actual local access and safety boundary.
