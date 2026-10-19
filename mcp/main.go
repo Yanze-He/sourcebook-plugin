@@ -228,10 +228,10 @@ func addTools(server *mcp.Server, client *bridgeClient, state *sessionState) {
 }
 
 // registerSourcebookApp makes the local Sources page available as an MCP App.
-// Every Sourcebook tool carries this resource metadata, so compatible hosts
-// open or retain the library panel as soon as a Sourcebook tool is used. Standard
-// MCP hosts safely ignore the resource and still receive the loopback URL from
-// open_sourcebook, so the rest of the agent integration stays portable.
+// Generic MCP Apps hosts receive this resource metadata. Codex and WorkBuddy
+// intentionally use their regular right-side browser surfaces instead, so
+// their library view is not coupled to a tool-result preview. Standard MCP
+// hosts can still use the loopback URL returned by open_sourcebook.
 func registerSourcebookApp(server *mcp.Server, client *bridgeClient) {
 	server.AddResource(&mcp.Resource{
 		URI:         sourcebookAppURI,
