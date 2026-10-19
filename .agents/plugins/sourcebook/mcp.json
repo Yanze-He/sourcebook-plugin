@@ -3,8 +3,8 @@
   "mcpServers": {
     "sourcebook": {
       "type": "stdio",
-      "command": "${PLUGIN_ROOT}/bin/sourcebook-mcp",
-      "args": []
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/launch-mcp.cjs"]
     }
   }
 }

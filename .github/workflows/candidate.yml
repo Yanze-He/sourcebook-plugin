@@ -36,9 +36,15 @@ jobs:
       - name: Build helper
         working-directory: mcp
         shell: bash
+        env:
+          BUILD_LABEL: ${{ github.event.inputs.build_label || 'development' }}
         run: |
+          if [[ ! "$BUILD_LABEL" =~ ^(build\.[0-9]{3}|development)$ ]]; then
+            echo "Invalid build label: $BUILD_LABEL" >&2
+            exit 1
+          fi
           mkdir -p ../.agents/plugins/sourcebook/bin
-          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
+          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1+$BUILD_LABEL" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
       - name: Verify version
         if: runner.os == 'macOS'
         run: .agents/plugins/sourcebook/bin/sourcebook-mcp version
