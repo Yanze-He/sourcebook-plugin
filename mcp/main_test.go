@@ -29,6 +29,47 @@ func TestSkillKeepsCodexBrowserTabOpen(t *testing.T) {
 	}
 }
 
+func TestNewSourceProposalsRequireContextNotes(t *testing.T) {
+	content, err := os.ReadFile("../.agents/plugins/sourcebook/skills/sourcebook/SKILL.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(content), "For each new text or file submission, write a short `note`") {
+		t.Fatal("Sourcebook Skill must instruct Agents to describe the source context")
+	}
+	for _, fields := range [][]any{
+		{"title", stringSchema("Title"), "content", stringSchema("Content"), "note", stringSchema("Context")},
+		{"path", stringSchema("Path"), "note", stringSchema("Context")},
+	} {
+		schema := noteRequiredSchema(fields...)
+		required := schema["required"].([]string)
+		if !containsString(required, "note") {
+			t.Fatalf("note missing from required schema fields: %#v", required)
+		}
+		if schema["properties"].(map[string]any)["note"].(map[string]any)["maxLength"] != 300 {
+			t.Fatalf("note length not bounded: %#v", schema)
+		}
+	}
+}
+
+func containsString(items []string, target string) bool {
+	for _, item := range items {
+		if item == target {
+			return true
+		}
+	}
+	return false
+}
+
+func containsAnyString(items []any, target string) bool {
+	for _, item := range items {
+		if item == target {
+			return true
+		}
+	}
+	return false
+}
+
 func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	bridge := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if request.Header.Get("X-Sourcebook-MCP-Token") != "test-token" {
@@ -42,6 +83,14 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 			_, _ = response.Write([]byte(`{"books":[{"id":"research","name":"Research","sourceCount":1}]}`))
 		case "/api/mcp/v1/books/research":
 			_, _ = response.Write([]byte(`{"book":{"id":"research","name":"Research","sourceCount":1}}`))
+		case "/api/mcp/v1/books/research/proposals":
+			var proposal struct {
+				Payload map[string]any `json:"payload"`
+			}
+			if err := json.NewDecoder(request.Body).Decode(&proposal); err != nil {
+				t.Errorf("decode proposal: %v", err)
+			}
+			_ = json.NewEncoder(response).Encode(map[string]any{"note": proposal.Payload["note"]})
 		default:
 			http.NotFound(response, request)
 		}
@@ -84,8 +133,12 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 				t.Fatalf("import schema type = %T", registered.InputSchema)
 			}
 			properties, ok := schema["properties"].(map[string]any)
-			if !ok || len(properties) != 1 || properties["path"] == nil || properties["source_ids"] != nil {
-				t.Fatalf("registered import schema must require only a path: %#v", schema)
+			if !ok || len(properties) != 2 || properties["path"] == nil || properties["note"] == nil || properties["source_ids"] != nil {
+				t.Fatalf("registered import schema must require a path and note: %#v", schema)
+			}
+			required, ok := schema["required"].([]any)
+			if !ok || !containsAnyString(required, "path") || !containsAnyString(required, "note") {
+				t.Fatalf("import schema required fields = %#v", schema["required"])
 			}
 		}
 		ui, ok := registered.Meta["ui"].(map[string]any)
@@ -148,6 +201,21 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	}
 	if selected.IsError {
 		t.Fatalf("select_book returned %v", selected.Content)
+	}
+	for _, name := range []string{"propose_create_text_source", "propose_import_local_file"} {
+		arguments := map[string]any{"title": "Summary", "content": "Confirmed outcome"}
+		if name == "propose_import_local_file" {
+			arguments = map[string]any{"path": "/tmp/result.png"}
+		}
+		missing, err := session.CallTool(ctx, &mcp.CallToolParams{Name: name, Arguments: arguments})
+		if err == nil && !missing.IsError {
+			t.Fatalf("%s accepted a missing note", name)
+		}
+		arguments["note"] = "Created for the user's current task."
+		proposed, err := session.CallTool(ctx, &mcp.CallToolParams{Name: name, Arguments: arguments})
+		if err != nil || proposed.IsError || !strings.Contains(textResult(proposed), arguments["note"].(string)) {
+			t.Fatalf("%s did not forward the note: %#v, %v", name, proposed, err)
+		}
 	}
 	var payload map[string]any
 	if err := json.Unmarshal([]byte(textResult(selected)), &payload); err != nil {

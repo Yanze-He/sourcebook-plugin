@@ -1,6 +1,6 @@
 # Sourcebook Agent Plugin
 
-The Sourcebook Agent Plugin connects Codex or WorkBuddy to a locally running [Sourcebook Desktop](https://sourcebook.online). It supplies a standard stdio MCP server and a small workflow Skill. Agent changes to a Book remain proposals until the user accepts them in Desktop.
+The Sourcebook Agent Plugin connects Codex or WorkBuddy to a locally running [Sourcebook Desktop](https://sourcebook.online). It supplies a standard stdio MCP server and a small workflow Skill. Agent changes to a Book remain proposals until the user accepts them in Desktop. New text and file submissions include a brief note describing where the material came from or what it is for; the note stays with the Source after acceptance.
 
 Installation instructions: [INSTALL.md](INSTALL.md). The plugin is versioned independently from Desktop; a matching Desktop installation is still required.
 
