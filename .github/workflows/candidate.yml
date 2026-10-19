@@ -36,9 +36,15 @@ jobs:
       - name: Build helper
         working-directory: mcp
         shell: bash
+        env:
+          SOURCEBOOK_BUILD_LABEL: ${{ inputs.build_label || 'development' }}
         run: |
           mkdir -p ../.agents/plugins/sourcebook/bin
-          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
+          if [[ ! "$SOURCEBOOK_BUILD_LABEL" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]]; then
+            echo 'Invalid build label' >&2
+            exit 1
+          fi
+          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1+${SOURCEBOOK_BUILD_LABEL}" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
       - name: Verify version
         if: runner.os == 'macOS'
         run: .agents/plugins/sourcebook/bin/sourcebook-mcp version
