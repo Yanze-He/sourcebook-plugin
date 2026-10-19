@@ -99,6 +99,18 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	if err != nil || len(resource.Contents) != 1 || !strings.Contains(resource.Contents[0].Text, bridge.URL) {
 		t.Fatalf("resource = %#v, %v", resource, err)
 	}
+	ui, ok := resource.Contents[0].Meta["ui"].(map[string]any)
+	if !ok {
+		t.Fatalf("resource is missing UI metadata: %#v", resource.Contents[0].Meta)
+	}
+	csp, ok := ui["csp"].(map[string]any)
+	if !ok {
+		t.Fatalf("resource is missing CSP metadata: %#v", ui)
+	}
+	frames, ok := csp["frameDomains"].([]any)
+	if !ok || len(frames) != 1 || frames[0] != bridge.URL {
+		t.Fatalf("resource must allow only its Desktop origin: %#v", csp)
+	}
 	prompts, err := session.ListPrompts(ctx, nil)
 	if err != nil || len(prompts.Prompts) != 1 || prompts.Prompts[0].Name != "open" {
 		t.Fatalf("prompts = %#v, %v", prompts, err)
@@ -135,6 +147,14 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 
 	cancel()
 	<-serverDone
+}
+
+func TestSourcebookAppResourceMetaRejectsNonLoopbackOrigins(t *testing.T) {
+	for _, serviceURL := range []string{"https://example.com", "http://localhost:4177", "http://192.168.1.2:4177", "not a URL"} {
+		if meta := sourcebookAppResourceMeta(serviceURL); meta != nil {
+			t.Errorf("%q unexpectedly grants an iframe origin: %#v", serviceURL, meta)
+		}
+	}
 }
 
 func TestInstalledDesktopPathRejectsUnpackagedHelper(t *testing.T) {

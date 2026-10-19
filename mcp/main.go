@@ -239,8 +239,20 @@ func registerSourcebookApp(server *mcp.Server, client *bridgeClient) {
 			URI:      sourcebookAppURI,
 			MIMEType: sourcebookAppMIME,
 			Text:     sourcebookAppHTML(client.config.MCPServiceURL),
+			Meta:     sourcebookAppResourceMeta(client.config.MCPServiceURL),
 		}}}, nil
 	})
+}
+
+// MCP Apps default to frame-src 'none'. The resource content, not the tool
+// declaration, must allow the exact local Desktop origin used by our iframe.
+func sourcebookAppResourceMeta(serviceURL string) mcp.Meta {
+	parsed, err := url.Parse(serviceURL)
+	if err != nil || parsed.Scheme != "http" || parsed.Hostname() != "127.0.0.1" {
+		return nil
+	}
+	origin := (&url.URL{Scheme: parsed.Scheme, Host: parsed.Host}).String()
+	return mcp.Meta{"ui": map[string]any{"csp": map[string]any{"frameDomains": []string{origin}}}}
 }
 
 func sourcebookAppTool(annotations *mcp.ToolAnnotations) *mcp.Tool {
