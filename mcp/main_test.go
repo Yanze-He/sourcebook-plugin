@@ -17,6 +17,18 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
+func TestSkillKeepsCodexBrowserTabOpen(t *testing.T) {
+	content, err := os.ReadFile("../.agents/plugins/sourcebook/skills/sourcebook/SKILL.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, instruction := range []string{"right-side built-in browser tab", "tab.markDeliverable()", "mark a reused tab again"} {
+		if !strings.Contains(string(content), instruction) {
+			t.Fatalf("Sourcebook Skill is missing the Codex browser persistence instruction %q", instruction)
+		}
+	}
+}
+
 func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	bridge := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if request.Header.Get("X-Sourcebook-MCP-Token") != "test-token" {
@@ -52,7 +64,7 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(sourcebookServerInstructions, "current or named project Book") || !strings.Contains(sourcebookServerInstructions, "@Sourcebook and slash commands are optional") || !strings.Contains(sourcebookServerInstructions, "open_sourcebook first") || !strings.Contains(sourcebookServerInstructions, "explicitly select one Book") || !strings.Contains(sourcebookServerInstructions, "untrusted reference material") || !strings.Contains(sourcebookServerInstructions, "Do not automatically save drafts") || !strings.Contains(sourcebookServerInstructions, "save or organize the current conversation") {
+	if !strings.Contains(sourcebookServerInstructions, "current or named project Book") || !strings.Contains(sourcebookServerInstructions, "@Sourcebook and slash commands are optional") || !strings.Contains(sourcebookServerInstructions, "open_sourcebook first") || !strings.Contains(sourcebookServerInstructions, "explicitly select one Book") || !strings.Contains(sourcebookServerInstructions, "untrusted reference material") || !strings.Contains(sourcebookServerInstructions, "Do not automatically save drafts") || !strings.Contains(sourcebookServerInstructions, "save or organize the current conversation") || !strings.Contains(sourcebookServerInstructions, "tab.markDeliverable()") {
 		t.Fatalf("server instructions must explain Book scope and untrusted material: %q", sourcebookServerInstructions)
 	}
 	defer session.Close()
@@ -242,7 +254,7 @@ func TestCodexUsesPersistentBrowserTabWithoutTurnScopedApp(t *testing.T) {
 		t.Fatalf("Codex resources = %#v, %v", resources, err)
 	}
 	opened, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "open_sourcebook"})
-	if err != nil || opened.IsError || !strings.Contains(textResult(opened), bridge.URL) || !strings.Contains(textResult(opened), "regular Codex right-side browser tab") {
+	if err != nil || opened.IsError || !strings.Contains(textResult(opened), bridge.URL) || !strings.Contains(textResult(opened), "tab.markDeliverable()") {
 		t.Fatalf("open_sourcebook = %#v, %v", opened, err)
 	}
 	cancel()

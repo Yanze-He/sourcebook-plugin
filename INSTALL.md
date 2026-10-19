@@ -13,7 +13,7 @@ codex plugin marketplace add Yanze-He/sourcebook-plugin
 codex plugin add sourcebook@sourcebook-plugin
 ```
 
-If an older `sourcebook@sourcebook-bundled` installation exists, remove only that Sourcebook entry after confirming the new plugin works. Never modify other plugins. Start a new local Codex task, then ask it to open Sourcebook. The plugin returns a local URL; Codex should open it in a regular right-side browser tab so the page remains available after the turn, rather than rely on a temporary MCP App preview in the conversation. If the task cannot write Codex's plugin configuration, say so and give these two commands for the user's local Terminal; a denied write is not a successful installation.
+If an older `sourcebook@sourcebook-bundled` installation exists, remove only that Sourcebook entry after confirming the new plugin works. Never modify other plugins. Start a new local Codex task, then ask it to open Sourcebook. The plugin returns a local URL; Codex should open it in a regular right-side built-in browser tab rather than an MCP App preview. When it uses `cua_repl`, it must call `tab.markDeliverable()` before finishing; otherwise the agent-created tab closes at the end of the turn. If the task cannot write Codex's plugin configuration, say so and give these two commands for the user's local Terminal; a denied write is not a successful installation.
 
 ## WorkBuddy
 
