@@ -49,6 +49,12 @@ jobs:
             echo "Plugin and WorkBuddy manifest versions differ" >&2
             exit 1
           fi
+          CODEX_VERSION=$(node -p 'require("../.agents/plugins/sourcebook/.codex-plugin/plugin.json").version')
+          if [[ "$VERSION" != "$CODEX_VERSION" ]]; then
+            echo "Plugin and Codex manifest versions differ" >&2
+            exit 1
+          fi
+          node -e 'const root = require("../.agents/plugins/sourcebook/.codex-plugin/plugin.json"); const config = require("../.agents/plugins/sourcebook/mcp.json").mcpServers.sourcebook; if (root.mcpServers !== "./mcp.json" || config.command !== "node" || config.env?.SOURCEBOOK_AGENT_NAME !== "Codex") process.exit(1)'
           node -e 'const config = require("../.agents/plugins/sourcebook/workbuddy-mcp.json").mcpServers.sourcebook; if (config.command !== "node" || !config.args?.[0]?.endsWith("/launch-mcp.cjs")) process.exit(1)'
           node -e 'const config = require("../.agents/plugins/sourcebook/.mcp.json").mcpServers.sourcebook; if (config.command !== "node" || config.args?.[0] !== "${CODEBUDDY_PLUGIN_ROOT}/launch-mcp.cjs" || config.cwd !== "${CODEBUDDY_PLUGIN_ROOT}" || config.env?.SOURCEBOOK_AGENT_NAME !== "WorkBuddy") process.exit(1)'
           mkdir -p ../.agents/plugins/sourcebook/bin

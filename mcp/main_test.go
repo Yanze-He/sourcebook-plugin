@@ -167,7 +167,7 @@ func TestWorkBuddyUsesRightSidebarBrowserWithoutInlineApp(t *testing.T) {
 
 	server := mcp.NewServer(&mcp.Implementation{Name: "sourcebook-test", Version: "test"}, nil)
 	client := &bridgeClient{config: bridgeConfig{MCPEnabled: true, MCPToken: "test-token", MCPServiceURL: bridge.URL}, http: bridge.Client()}
-	if !isWorkBuddy() {
+	if !usesBrowserTabInsteadOfMCPApp() {
 		registerSourcebookApp(server, client)
 	}
 	addTools(server, client, &sessionState{})
@@ -197,6 +197,52 @@ func TestWorkBuddyUsesRightSidebarBrowserWithoutInlineApp(t *testing.T) {
 	}
 	opened, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "open_sourcebook"})
 	if err != nil || opened.IsError || !strings.Contains(textResult(opened), bridge.URL) || !strings.Contains(textResult(opened), "right-side built-in browser panel") {
+		t.Fatalf("open_sourcebook = %#v, %v", opened, err)
+	}
+	cancel()
+	<-serverDone
+}
+
+func TestCodexUsesPersistentBrowserTabWithoutTurnScopedApp(t *testing.T) {
+	t.Setenv("SOURCEBOOK_AGENT_NAME", "Codex")
+	bridge := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("content-type", "application/json")
+		_, _ = response.Write([]byte(`{"ok":true}`))
+	}))
+	defer bridge.Close()
+
+	server := mcp.NewServer(&mcp.Implementation{Name: "sourcebook-test", Version: "test"}, nil)
+	client := &bridgeClient{config: bridgeConfig{MCPEnabled: true, MCPToken: "test-token", MCPServiceURL: bridge.URL}, http: bridge.Client()}
+	if !usesBrowserTabInsteadOfMCPApp() {
+		registerSourcebookApp(server, client)
+	}
+	addTools(server, client, &sessionState{})
+	serverTransport, clientTransport := mcp.NewInMemoryTransports()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	serverDone := make(chan error, 1)
+	go func() { serverDone <- server.Run(ctx, serverTransport) }()
+
+	session, err := mcp.NewClient(&mcp.Implementation{Name: "codex-test", Version: "test"}, nil).Connect(ctx, clientTransport, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer session.Close()
+	listed, err := session.ListTools(ctx, nil)
+	if err != nil || len(listed.Tools) != 9 {
+		t.Fatalf("tools = %#v, %v", listed, err)
+	}
+	for _, registered := range listed.Tools {
+		if registered.Meta["ui"] != nil || registered.Meta["ui/resourceUri"] != nil || registered.Meta["openai/ui"] != nil {
+			t.Fatalf("%s unexpectedly advertises a turn-scoped App: %#v", registered.Name, registered.Meta)
+		}
+	}
+	resources, err := session.ListResources(ctx, nil)
+	if err != nil || len(resources.Resources) != 0 {
+		t.Fatalf("Codex resources = %#v, %v", resources, err)
+	}
+	opened, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "open_sourcebook"})
+	if err != nil || opened.IsError || !strings.Contains(textResult(opened), bridge.URL) || !strings.Contains(textResult(opened), "regular Codex right-side browser tab") {
 		t.Fatalf("open_sourcebook = %#v, %v", opened, err)
 	}
 	cancel()
