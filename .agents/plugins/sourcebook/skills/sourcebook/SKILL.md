@@ -2,12 +2,14 @@
 name: sourcebook
 description: Use a locally running Sourcebook Desktop library when a user mentions Sourcebook or asks to read, save, organize, or update work in a current or named project Book.
 metadata:
-  sourcebook_version: "0.1.2-beta.2"
+  sourcebook_version: "0.1.2-beta.3"
 ---
 
 Use Sourcebook without requiring `@Sourcebook` whenever the user mentions Sourcebook, refers to a current or named project Book, asks to save something to a Book, or asks to organize the current conversation into their project materials. This Skill supplies the workflow; Sourcebook MCP supplies the actual local access and safety boundary.
 
 If “book” could mean an ordinary book or another product rather than a Sourcebook project Book, ask a short clarifying question before opening Sourcebook.
+
+If Sourcebook MCP tools are absent, do not infer that Desktop is missing or claim opening Desktop fixed the connection. In WorkBuddy, ask the user to check **Connectors → Custom connectors → MCP service management** and click **Trust** for Sourcebook if offered, then retry in a new conversation. Report this as an incomplete connection, not a successful Sourcebook open.
 
 ## Project work from a Book
 

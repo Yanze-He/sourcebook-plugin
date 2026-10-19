@@ -1,6 +1,6 @@
 # Install Sourcebook in Codex
 
-**Version:** 0.1.2-beta.2
+**Version:** 0.1.2-beta.3
 
 Sourcebook Desktop must be installed and running, with local Agent access enabled. If it is missing, direct the user to https://sourcebook.online.
 

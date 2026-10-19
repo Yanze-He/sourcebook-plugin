@@ -50,6 +50,7 @@ jobs:
             exit 1
           fi
           node -e 'const config = require("../.agents/plugins/sourcebook/workbuddy-mcp.json").mcpServers.sourcebook; if (config.command !== "node" || !config.args?.[0]?.endsWith("/launch-mcp.cjs")) process.exit(1)'
+          node -e 'const config = require("../.agents/plugins/sourcebook/.mcp.json").mcpServers.sourcebook; if (config.command !== "node" || config.args?.[0] !== "${CODEBUDDY_PLUGIN_ROOT}/launch-mcp.cjs" || config.cwd !== "${CODEBUDDY_PLUGIN_ROOT}" || config.env?.SOURCEBOOK_AGENT_NAME !== "WorkBuddy") process.exit(1)'
           mkdir -p ../.agents/plugins/sourcebook/bin
           go build -trimpath -ldflags="-s -w -X main.bridgeVersion=$VERSION+$BUILD_LABEL" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
       - name: Verify version

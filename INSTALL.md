@@ -2,7 +2,7 @@
 
 This repository supports Codex and WorkBuddy on macOS Apple silicon and Windows x64. Install [Sourcebook Desktop](https://sourcebook.online) first, open it, and enable **Settings → Connect an Agent → Local access**. If Desktop is missing, stop and tell the user to download it from https://sourcebook.online.
 
-**Plugin version:** `0.1.2-beta.2`. Do not treat marketplace registration alone as successful installation: verify the MCP server starts and reports this version.
+**Plugin version:** `0.1.2-beta.3`. Do not treat marketplace registration alone as successful installation: verify the MCP server starts and reports this version.
 
 ## Codex
 

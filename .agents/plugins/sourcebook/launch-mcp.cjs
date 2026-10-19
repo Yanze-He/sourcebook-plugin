@@ -1,5 +1,5 @@
-// WorkBuddy accepts a single executable token for the MCP command, but
-// expands PLUGIN_ROOT in arguments. Resolve the bundled native helper here.
+// WorkBuddy expands CODEBUDDY_PLUGIN_ROOT in its plugin MCP manifest.
+// Resolve the bundled platform-specific native helper from this script.
 const { spawn } = require('node:child_process');
 const path = require('node:path');
 
