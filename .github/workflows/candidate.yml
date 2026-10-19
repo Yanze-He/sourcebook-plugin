@@ -49,6 +49,7 @@ jobs:
             echo "Plugin and WorkBuddy manifest versions differ" >&2
             exit 1
           fi
+          node -e 'const config = require("../.agents/plugins/sourcebook/workbuddy-mcp.json").mcpServers.sourcebook; if (config.command !== "node" || !config.args?.[0]?.endsWith("/launch-mcp.cjs")) process.exit(1)'
           mkdir -p ../.agents/plugins/sourcebook/bin
           go build -trimpath -ldflags="-s -w -X main.bridgeVersion=$VERSION+$BUILD_LABEL" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
       - name: Verify version
