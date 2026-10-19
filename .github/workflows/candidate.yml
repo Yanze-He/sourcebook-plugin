@@ -1,0 +1,54 @@
+name: Build plugin candidates
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_label:
+        description: Candidate build label, such as build.002
+        required: true
+        type: string
+  push:
+    branches: [development]
+
+permissions:
+  contents: read
+
+jobs:
+  plugin:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-14
+            platform: macos-arm64
+            filename: sourcebook-mcp
+          - runner: windows-latest
+            platform: windows-x64
+            filename: sourcebook-mcp.exe
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.3'
+      - name: Test MCP
+        working-directory: mcp
+        run: go test ./...
+      - name: Build helper
+        working-directory: mcp
+        shell: bash
+        run: |
+          mkdir -p ../.agents/plugins/sourcebook/bin
+          go build -trimpath -ldflags="-s -w -X main.bridgeVersion=0.1.2-beta.1" -o ../.agents/plugins/sourcebook/bin/${{ matrix.filename }} .
+      - name: Verify version
+        if: runner.os == 'macOS'
+        run: .agents/plugins/sourcebook/bin/sourcebook-mcp version
+      - name: Verify extension-free command on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & .agents/plugins/sourcebook/bin/sourcebook-mcp version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sourcebook-plugin-${{ matrix.platform }}-${{ github.event.inputs.build_label || 'development' }}
+          path: .agents/plugins/sourcebook/bin/${{ matrix.filename }}

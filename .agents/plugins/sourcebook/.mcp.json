@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "sourcebook": {
+      "command": "./bin/sourcebook-mcp",
+      "args": [],
+      "cwd": ".",
+      "env": { "SOURCEBOOK_AGENT_NAME": "Codex" }
+    }
+  }
+}
