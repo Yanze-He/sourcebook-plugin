@@ -40,7 +40,7 @@ Sourcebook will not silently change a Book. Ask the Agent to submit content or a
 
 | Symptom | Check |
 | --- | --- |
-| Agent cannot find Sourcebook tools | Confirm Desktop is running and local Agent access is on. In WorkBuddy, check **Trust** in MCP service management; then restart and try a new conversation. |
+| Agent cannot find Sourcebook tools | Confirm the plugin is installed. In WorkBuddy, check **Trust** in MCP service management. Restart the Agent and try a new conversation; Desktop must be running when you call a tool. |
 | Codex installation says permission denied | Run the two Codex commands above in your local Terminal. Do not treat the failed Agent attempt as installed. |
 | WorkBuddy still uses an old helper | Check for an older user-level `mcpServers.sourcebook` entry. Back up the file and remove **only** that entry after the marketplace connection works. |
 | Agent returns a URL but no browser opens | Ask it to open the returned local URL in its right-side built-in browser. The URL alone does not mean the page was opened. |
