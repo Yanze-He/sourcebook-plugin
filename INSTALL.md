@@ -5,8 +5,7 @@
 **Supported:** Codex and WorkBuddy on macOS (Apple silicon) or Windows x64.
 
 This is the canonical manual for supported installation, update, and
-troubleshooting steps. The guide linked from Sourcebook Desktop tells Agents how
-to use these steps and respond concisely.
+troubleshooting steps for people installing Sourcebook Agent Plugin.
 
 Before installing the plugin, [install Sourcebook Desktop](https://sourcebook.online), open it, and turn on **Settings → Connect an Agent → Local access**. The plugin cannot use your Books without a running Desktop. Desktop and plugin versions are independent.
 
