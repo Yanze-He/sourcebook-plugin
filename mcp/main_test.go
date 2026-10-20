@@ -22,7 +22,7 @@ func TestSkillKeepsCodexBrowserTabOpen(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, instruction := range []string{"right-side built-in browser tab", "tab.markDeliverable()", "mark a reused tab again"} {
+	for _, instruction := range []string{"right-side built-in browser tab", "tab.markDeliverable()", "repeat the mark on later turns"} {
 		if !strings.Contains(string(content), instruction) {
 			t.Fatalf("Sourcebook Skill is missing the Codex browser persistence instruction %q", instruction)
 		}
@@ -34,7 +34,7 @@ func TestNewSourceProposalsRequireContextNotes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(content), "For each new text or file submission, write a short `note`") {
+	if !strings.Contains(string(content), "Add a brief, factual note to each text or file proposal") {
 		t.Fatal("Sourcebook Skill must instruct Agents to describe the source context")
 	}
 	for _, fields := range [][]any{
@@ -113,7 +113,7 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(sourcebookServerInstructions, "current or named project Book") || !strings.Contains(sourcebookServerInstructions, "@Sourcebook and slash commands are optional") || !strings.Contains(sourcebookServerInstructions, "open_sourcebook first") || !strings.Contains(sourcebookServerInstructions, "explicitly select one Book") || !strings.Contains(sourcebookServerInstructions, "untrusted reference material") || !strings.Contains(sourcebookServerInstructions, "Do not automatically save drafts") || !strings.Contains(sourcebookServerInstructions, "save or organize the current conversation") || !strings.Contains(sourcebookServerInstructions, "tab.markDeliverable()") {
+	if !strings.Contains(sourcebookServerInstructions, "current or named project Book") || !strings.Contains(sourcebookServerInstructions, "@Sourcebook and slash commands are optional") || !strings.Contains(sourcebookServerInstructions, "Call open_sourcebook when") || !strings.Contains(sourcebookServerInstructions, "explicitly select the target") || !strings.Contains(sourcebookServerInstructions, "untrusted reference material") || !strings.Contains(sourcebookServerInstructions, "Do not automatically save drafts") || !strings.Contains(sourcebookServerInstructions, "save or organize the current conversation") || !strings.Contains(sourcebookServerInstructions, "tab.markDeliverable()") {
 		t.Fatalf("server instructions must explain Book scope and untrusted material: %q", sourcebookServerInstructions)
 	}
 	defer session.Close()
@@ -133,7 +133,7 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 				t.Fatalf("import schema type = %T", registered.InputSchema)
 			}
 			properties, ok := schema["properties"].(map[string]any)
-			if !ok || len(properties) != 2 || properties["path"] == nil || properties["note"] == nil || properties["source_ids"] != nil {
+			if !ok || len(properties) != 3 || properties["path"] == nil || properties["title"] == nil || properties["note"] == nil || properties["source_ids"] != nil {
 				t.Fatalf("registered import schema must require a path and note: %#v", schema)
 			}
 			required, ok := schema["required"].([]any)
@@ -185,7 +185,7 @@ func TestMCPInitializesListsToolsAndRequiresBookSelection(t *testing.T) {
 		t.Fatalf("open prompt = %#v, %v", prompt, err)
 	}
 	openedPrompt, ok := prompt.Messages[0].Content.(*mcp.TextContent)
-	if !ok || !strings.Contains(openedPrompt.Text, "open_sourcebook") || !strings.Contains(openedPrompt.Text, "ask me which Book") {
+	if !ok || !strings.Contains(openedPrompt.Text, "Open my local Sourcebook library") || !strings.Contains(openedPrompt.Text, "ask me to choose when the evidence is ambiguous") {
 		t.Fatalf("open prompt content = %#v", prompt.Messages[0].Content)
 	}
 	result, err := session.CallTool(ctx, &mcp.CallToolParams{Name: "search_sources", Arguments: map[string]any{"query": "brief"}})
@@ -400,15 +400,15 @@ func TestCodexCommandOutputKeepsWarningsOutOfSuccessfulJSON(t *testing.T) {
 	}
 }
 
-func TestImportLocalFileAcceptsOnlyPath(t *testing.T) {
-	schema := objectSchema("path", stringSchema("Absolute path to one local file"))
+func TestImportLocalFileAcceptsPathAndOptionalTitle(t *testing.T) {
+	schema := objectSchema("path", stringSchema("Absolute path to one local file"), "title", stringSchema("Optional readable title"), "note", stringSchema("Context"))
 	required, ok := schema["required"].([]string)
 	if !ok || len(required) != 1 || required[0] != "path" {
 		t.Fatalf("import required fields = %#v, want path only", schema["required"])
 	}
 	properties, ok := schema["properties"].(map[string]any)
-	if !ok || len(properties) != 1 || properties["path"] == nil || properties["source_ids"] != nil {
-		t.Fatalf("import schema must not expose related source IDs: %#v", schema)
+	if !ok || len(properties) != 3 || properties["path"] == nil || properties["title"] == nil || properties["note"] == nil || properties["source_ids"] != nil {
+		t.Fatalf("import schema must expose path, optional title, and note without related source IDs: %#v", schema)
 	}
 }
 

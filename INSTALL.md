@@ -1,6 +1,6 @@
 # Install or update the Sourcebook Agent Plugin
 
-**Current plugin version:** `0.1.2-beta.3`.
+**Current plugin version:** `0.1.2-beta.4`.
 
 **Supported:** Codex and WorkBuddy on macOS (Apple silicon) or Windows x64.
 
@@ -32,7 +32,7 @@ An older manually configured Sourcebook MCP can take precedence over the marketp
 
 ## After installation and when updating
 
-Use the same marketplace to update the plugin. In Codex, upgrade the marketplace and run `codex plugin add sourcebook@sourcebook-plugin` again. Restart the Agent and begin a new conversation so it loads the new MCP server and Skill. Confirm that the helper reports `0.1.2-beta.3` and that **“Open Sourcebook”** works; seeing the Skill alone does not prove the MCP connection is active. You may need to trust an updated WorkBuddy connector again.
+Use the same marketplace to update the plugin. In Codex, upgrade the marketplace and run `codex plugin add sourcebook@sourcebook-plugin` again. Restart the Agent and begin a new conversation so it loads the new MCP server and Skill. Confirm that the helper reports `0.1.2-beta.4` and that **“Open Sourcebook”** works; seeing the Skill alone does not prove the MCP connection is active. You may need to trust an updated WorkBuddy connector again.
 
 Sourcebook will not silently change a Book. Ask the Agent to submit content or a metadata change, then review it in Desktop's **Agent submissions** window. If you submit a new text or file, the Agent should add a brief note describing where it came from or what it is for.
 

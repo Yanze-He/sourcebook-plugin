@@ -2,7 +2,7 @@
 
 Use your Sourcebook Books while working with an Agent. This plugin connects **Codex** or **WorkBuddy** to [Sourcebook Desktop](https://sourcebook.online) through a local MCP server and a workflow Skill. You can ask naturally—no `@` or `/` command is required.
 
-> **Beta · v0.1.2-beta.3** · macOS (Apple silicon) and Windows x64 · [Install guide](INSTALL.md) · [Latest plugin release](https://github.com/Yanze-He/sourcebook-plugin/releases)
+> **Beta · v0.1.2-beta.4** · macOS (Apple silicon) and Windows x64 · [Install guide](INSTALL.md) · [Latest plugin release](https://github.com/Yanze-He/sourcebook-plugin/releases)
 
 <img width="2048" height="1191" alt="image" src="https://github.com/user-attachments/assets/f3827521-4541-4fe3-805f-b190234c9c6f" />
 
