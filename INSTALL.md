@@ -4,6 +4,10 @@
 
 **Supported:** Codex and WorkBuddy on macOS (Apple silicon) or Windows x64.
 
+This is the canonical manual for supported installation, update, and
+troubleshooting steps. The guide linked from Sourcebook Desktop tells Agents how
+to use these steps and respond concisely.
+
 Before installing the plugin, [install Sourcebook Desktop](https://sourcebook.online), open it, and turn on **Settings → Connect an Agent → Local access**. The plugin cannot use your Books without a running Desktop. Desktop and plugin versions are independent.
 
 ## Codex
@@ -46,4 +50,4 @@ Sourcebook will not silently change a Book. Ask the Agent to submit content or a
 | Agent returns a URL but no browser opens | Ask it to open the returned local URL in its right-side built-in browser. The URL alone does not mean the page was opened. |
 | Agent submitted content but it is not in the Book | Open **Agent submissions** in Desktop and accept the pending submission. |
 
-For Agent-driven installation, the package has [Codex](.agents/plugins/sourcebook/INSTALL-CODEX.md) and [WorkBuddy](.agents/plugins/sourcebook/INSTALL-WORKBUDDY.md) guides. The Agent should report only whether installation succeeded, the verified version, and what you need to do next—not command logs or a long review.
+For detailed host-specific setup, see the package's [Codex](.agents/plugins/sourcebook/INSTALL-CODEX.md) and [WorkBuddy](.agents/plugins/sourcebook/INSTALL-WORKBUDDY.md) guides.
