@@ -11,7 +11,9 @@ Before installing the plugin, [install Sourcebook Desktop](https://sourcebook.on
 
 ## Codex
 
-Run these commands in your own Terminal, or ask a local Codex task with permission to install plugins to run them:
+On the computer where Codex runs, open Terminal and run these commands. They
+change that computer's Codex plugin configuration; a cloud or remote terminal
+will install the plugin in the wrong environment.
 
 ```sh
 codex plugin marketplace add Yanze-He/sourcebook-plugin
@@ -20,7 +22,7 @@ codex plugin add sourcebook@sourcebook-plugin
 
 If the marketplace is already registered, use `codex plugin marketplace upgrade sourcebook-plugin` before running the second command. Start a **new local task** and ask **“Open Sourcebook.”** It should open the library in a regular right-side browser tab.
 
-If Codex cannot write its plugin configuration, run the commands in your own Terminal; an Agent reporting a permission error has **not** installed the plugin. If you previously installed `sourcebook@sourcebook-bundled`, remove only that older Sourcebook entry after the new plugin works.
+If you previously installed `sourcebook@sourcebook-bundled`, remove only that older Sourcebook entry after the new plugin works.
 
 ## WorkBuddy
 
